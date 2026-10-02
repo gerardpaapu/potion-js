@@ -20,6 +20,9 @@ export function tokenize(source: string, config: TokenizerJson) {
 
     const ids = [];
     for (const token of tokens) {
+        if (token === '') {
+            continue;
+        }
         let i = token.length;
         let start = 0;
 
@@ -42,7 +45,8 @@ export function tokenize(source: string, config: TokenizerJson) {
         }
 
         if (i === 0) {
-            throw new Error(`Couldn't tokenize, no entry for: ${token}`);
+            let codepoints = Array.from(token, (cha) => cha.codePointAt(0));
+            throw new Error(`Couldn't tokenize, no entry for: ${token} (${JSON.stringify(codepoints)})`);
         }
     }
 
