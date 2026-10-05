@@ -320,13 +320,17 @@ BigUint64Array(1) [ 224n ]
 
 No matter which way we cut it, there's a `224` and "some zeroes".
 
-The JSON we saw in xxd starts at byte 9 `{` and ends at byte 228 `}`, but then the next 8 bytes are `0x20` aka space `" "` so if I read 224 bytes starting at 9 ... I end up taking _half_ of those spaces.
+The JSON we saw in xxd starts at byte 9 with `'{"weight'` and ends at byte 228 with `'}'0]}}'` then the next 8 bytes are `0x20` aka space `" "`. 
 
-That's a little spooky, but `JSON.parse()` will just ignore trailing spaces so let's ignore that spooky feeling and charge ahead.
+If I read 224 bytes starting at 9 we end up taking _half_ of those spaces.
+
+"Half" is a little spooky. "All" or "none" would both feel like we're doing the right thing but `JSON.parse()` will just ignore trailing spaces so everything's fine!
+
+Ignore that spooky feeling and charge ahead. That weirdly specific amount of padding is probably there for no reason!
 
 ## Reading is what? Fundamental
 
-I don't use them often, but `node:fs` does come with all the things you need to read a specific number of bytes from specific locations in a file. 
+I don't use them often but `node:fs` does come with all the functions you need to read a specific number of bytes from specific byte locations in a file.
 
 `await fs.read(fileHandle, buffer, offset, length, position)` reads `length` bytes from `position` in the file and writes them to the location starting at `offset` in `buffer`.
 
@@ -365,7 +369,7 @@ The straightforward reading of this is that it's describing sections in the file
 
 Data offsets seems straightforward, they look like they're `[start, end]` as byte offsets. The weights start at `0` so we must be reading from after the header, so that's really at 8 + 224, and the next 118,100 bytes are "weights". 
 
-`dtype` seems straightforwardly to map to C number types or JavaScript typed arrays. `F32` is 32 bit floats, `I32` is 32 bit integers, `I8` is 8 bit integers. I'm assuming signed for both the integer types.
+`dtype` seems straightforwardly to map to C number types or JavaScript typed arrays. `F32` is 32 bit floats, `I32` is 32 bit integers, `I8` is 8 bit integers. I'm assuming signed for both the integer types. "d" probably stands for "duh".
 
 Shape must be the dimensions of the tensor, so weights and mappings are just vectors (or normal arrays), and the embeddings are a 200x256 2D matrix.
 
@@ -394,13 +398,13 @@ So I think I've got the blobs, but no idea what to do with them.
 - "mappings" sounds like a table mapping some domain to some other domain in some straightforward way.
 - "embeddings" is what we want to end up with what does it mean to just have some lying around?
 
-I spent ages staring at this but you don't have to.
+I spent a long time stuck here, you can simulate that experience by just squinting at this sentence for 45 minutes before continuing. It probably helps my engagement stats too.
 
-What eventually stuck out to me is that both mappings and weights have length 29,525.
+What eventually got me unstuck was noticing that both mappings and weights have length 29,525.
 
 It's not a power of two, or any other magic number I'm familiar with. So I'm looking everywhere for another reason why it would be that exact number. Finally I logged out the number of keys in the vocab. **There are 29,525 keys in the vocab.**
 
-Of course the ids in the vocab aren't just random ints! They must be indexes! Every number between 0 and 29,524 point to a specific token.
+Of course the ids in the vocab aren't just random ints! They must be indexes! Every number between 0 and 29,524 points to a specific token.
 
 "mappings" and "weights" are that exact size so I'm probably meant to lookup each token id in them like a table!
 
