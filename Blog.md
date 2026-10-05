@@ -552,7 +552,9 @@ My first thought was I could build an index by [k-means clustering](https://en.w
 
 > [!NOTE]
 >
-> If you've known me for a while, I have a pretty small bag of tricks.I tend to pull them out and hope they apply to the problem at hand. K-means clustering is one I [learned a while ago](https://www.oreilly.com/library/view/programming-collective-intelligence/9780596529321/) and used we were trying to figure out which "xero blue" is the **real** xero blue. So now when I get stuck in a meeting I might just say "have we we tried k-means clustering", even if it's completely irrelevant it has smart sounding words
+> If you've known me for a while, I have a pretty small bag of tricks.I tend to pull them out and hope they apply to the problem at hand. K-means clustering is one I [learned a while ago](https://www.oreilly.com/library/view/programming-collective-intelligence/9780596529321/) and used when we were trying to figure out which "xero blue" is the **real** xero blue.
+>
+> So now when I get stuck in a meeting I might just say "have we we tried k-means clustering" even if it's completely irrelevant it has smart sounding words
 
 This would give me some much smaller number of points in the space to test against, aka. "centroids" and a list of each object in the index near that centroid. So if I ran clustering with `k = 12`, I could do the expensive distance calculation over only 12 objects, take the nearest two and search their lists. 
 
