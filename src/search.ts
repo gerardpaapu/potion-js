@@ -7,7 +7,7 @@ import { hammingDistance256, quantizeTo1Bit } from "./quantize.ts";
 
 import * as FS from "node:fs/promises";
 import * as S from "node:stream/consumers";
-import { cosineDistance } from "./vector.ts";
+import { distanceSquared } from "./vector.ts";
 
 export async function main() {
   const MODELS_PATH =
@@ -83,7 +83,7 @@ export async function main() {
     // pass, and keeping the top 10 by the cosine metric
     for (let i = 0; i < K; i++) {
       const { location } = firstPassResults[i];
-      const distance = cosineDistance(needleEmbedding, indexMemory, location);
+      const distance = distanceSquared(needleEmbedding, indexMemory, location);
 
       insertCandidateSorted({ distance, location }, bestResults);
     }
