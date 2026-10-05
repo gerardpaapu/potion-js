@@ -28,13 +28,13 @@ In this case the property that I'm trying to preserve is "sentence similarity", 
 
 I tend to imagine this literally, if you had a post-it for each sentence and you tried to lay them out on your desk in a way that more similar sentences were near each other and less similar sentences were further apart, you would be generating an embedding in 2d space (the surface of the desk). It's not going to work perfectly because the position on the desk just doesn't have as much information as each sentence does, but it does mean that someone else can tell which sentences you think are the most similar at a glance, even if they can't read.
 
-So when I'm looking for a note in ruru I typically don't search by the text of the note itself. I typically search by asking a question.
+So when I'm looking for a note in `ruru` I typically don't search by the text of the note itself. I typically search by asking a question.
 
 ```
 $ ruru ask "How do I show that a button is disabled?"
 ```
 
-ruru will encode the question into an embedding, then it searches through my database for questions in my index that are "similar", for the most similar questions it lists the titles of the notes associated with them. So I get a list of notes that answer "questions like the one I asked", and I can pick one to read.
+`ruru` will encode the question into an embedding then it searches through my database for questions in my index that are "similar". For the most similar questions it lists the titles of the notes associated with them. So I get a list of notes that answer "questions like the one I asked" and I can pick one to read.
 
 ```
 $ ruru ask "How do I show that a button is disabled?"
@@ -54,13 +54,13 @@ updated_at: 2026-09-16T03:26:17Z
 > **Introduction**: Disabled states are used to inform users that a particular interaction or action is presently unavailable. However, if an interactive element is disabled without proper context, blah blah blah a11y
 ```
 
-There's [an sqlite3 extension ](https://github.com/asg017/sqlite-vec) that can do **very fast** search over a lot of vectors for similarity. This gives me semantic search with very little code. Modern coding agents tend to be pretty good at asking this kind of question, so this helps them discover relevant information during tasks without overloading their context.
+There's [an sqlite3 extension ](https://github.com/asg017/sqlite-vec) that can do **very fast** search over a lot of vectors for similarity. This gives me semantic search with very little code. Modern coding agents tend to be pretty good at asking this kind of question so this helps them discover relevant information during tasks without overloading their context.
 
 ## Looking for a new model
 
 In `ruru` I'm using `all-MiniLM-L6-v1` as my embedding model, it's a small model (87 MB on disk) that loads fast and can happily run in CPU. It generates an array of 384 32-bit floats for each "sentence", and it does an okay job.
 
-If we're being honest with ourselves the reason I'm using it is because it's the textbook example of a sentence similarity model, and I don't know much about what else is available. It turns out that if you look at [the leaderboards](https://huggingface.co/spaces/mteb/leaderboard) for this sort of thing, there are lots of other (newer) models that are:
+If we're being honest with ourselves the reason I'm using it is because it's the textbook example of a sentence similarity model and I don't know much about what else is available. It turns out that if you look at [the leaderboards](https://huggingface.co/spaces/mteb/leaderboard) for this sort of thing there are lots of other (newer) models that are:
 
 1. also open-source and freely available
 2. about the same size on disk
@@ -83,11 +83,11 @@ These models are called "static" because they don't use a forward pass (dynamic 
 
 > It does \[inference\] by computing one fixed vector per token, plus lightweight post-processing. Sentence embeddings are then produced by simply averaging token vectors.
 
-If you've met me you can tell, I've completely forgotten how I got here and that I was meant to be doing something for `ruru`. One of my fatal flaws is that I love solutions way more than I love problems.
+If you've met me you can tell I've completely forgotten how I got here and that I was meant to be doing something for `ruru`. One of my fatal flaws is that I love solutions way more than I love problems.
 
-Minish Labs' [smallest official model](https://huggingface.co/minishlab/potion-base-8M/tree/main) is 30MB on disk. That's tiny. 
+Minish Labs' [smallest official model](https://huggingface.co/minishlab/potion-base-8M/tree/main) is only 30MB on disk. That's tiny.
 
-Falling down the rabbit hole further I found [a true maniac (affectionate)](https://safereddit.com/r/LocalLLaMA/comments/1sapdue/700kb_embedding_model_that_actually_works_built_a/) has been training, distilling and quanti(s|z)ing in his lab inside an active volcano somewhere. He's been producing potion models that are even smaller than Minish Lab's official releases down to 700 kilobytes and **still doing pretty well on benchmarks**.
+Falling down the rabbit hole further I found [a true maniac (affectionate)](https://safereddit.com/r/LocalLLaMA/comments/1sapdue/700kb_embedding_model_that_actually_works_built_a/) has been training, distilling and quantizing in his lab inside an active volcano somewhere. He's been producing potion models that are even smaller than Minish Lab's official releases down to 700 kilobytes and **still doing pretty well on benchmarks**.
 
 700K is so small! I downloaded it (didn't take long) and ran the sample code in python.
 
@@ -888,7 +888,7 @@ for (const { idx } of top100) {
 // and reverse them to get #1 ... #10
 const final = top10.map(({ idx }) => source[idx]).toReversed();
 
-for (const [i, { headlin }] of final.entries()) {
+for (const [i, headline] of final.entries()) {
   console.log(`${i.toString().padStart(2)}. ${headline}`);
 }
 ```
@@ -923,7 +923,7 @@ $ time ./search.js <<< 'Ice cream is poisoned'
 ./search.js <<< 'Ice cream is poisoned'  0.34s user 1.04s system 105% cpu 1.314 total
 ```
 
-(Sorry #cop-frontend I couldn't bring myself to write a react frontend for this on my day off).
+(Sorry `#cop-frontend` I couldn't bring myself to write a react frontend for this on my day off).
 
 One weird trick is if you run this with only the 1-bit quantized index without the re-ranking. The whole thing runs in 0.3 seconds, and the rankings are **not** that different.
 
