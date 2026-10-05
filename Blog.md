@@ -550,7 +550,7 @@ I needed some way to arrange these in advance so that at **runtime** I don't hav
 
 My first thought was I could build an index by [k-means clustering](https://en.wikipedia.org/wiki/K-means_clustering) the full set ahead of time.
 
-> [!INFO]
+> [!NOTE]
 >
 > If you've known me for a while, I have a pretty small bag of tricks.I tend to pull them out and hope they apply to the problem at hand. K-means clustering is one I [learned a while ago](https://www.oreilly.com/library/view/programming-collective-intelligence/9780596529321/) and used we were trying to figure out which "xero blue" is the **real** xero blue. So now when I get stuck in a meeting I might just say "have we we tried k-means clustering", even if it's completely irrelevant it has smart sounding words
 
